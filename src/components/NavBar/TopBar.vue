@@ -15,15 +15,15 @@
             <span class="text-dark"><i class="bi bi-power"></i></span>
           </a>
           <div class="dropdown-menu dropdown-menu-end">
-            <a class="dropdown-item" href="pages-profile.html">
-              <span><i class="bi bi-person align-middle"></i></span> Profile</a
+            <router-link class="dropdown-item" to="/profile">
+              <span><i class="bi bi-person align-middle"></i></span> Profile</router-link
             >
-            <a class="dropdown-item" href="#"
-              ><span><i class="bi bi-pie-chart"></i></span> Analytics</a
+            <router-link class="dropdown-item" to="/"
+              ><span><i class="bi bi-pie-chart"></i></span> Analytics</router-link
             >
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#"
-              ><span><i class="bi bi-box-arrow-right"></i></span> Log out</a
+            <router-link class="dropdown-item" to="/auth/login"
+              ><span><i class="bi bi-box-arrow-right"></i></span> Log out</router-link
             >
           </div>
         </li>
