@@ -1,0 +1,66 @@
+<template>
+  <nav id="sidebar" class="sidebar js-sidebar">
+    <div class="sidebar-content js-simplebar">
+      <a class="sidebar-brand" href="/">
+        <span class="align-middle">Attendance System</span>
+      </a>
+
+      <ul class="sidebar-nav">
+        <li class="sidebar-header">HOME</li>
+
+        <li class="sidebar-item active">
+          <router-link class="sidebar-link" to="/">
+            <i class="align-middle" data-feather="sliders"></i>
+            <span class="align-middle">Dashboard</span>
+          </router-link>
+        </li>
+
+        <li class="sidebar-item">
+          <router-link class="sidebar-link" to="/all-students">
+            <i class="align-middle" data-feather="user"></i>
+            <span class="align-middle">All Students</span>
+          </router-link>
+        </li>
+
+        <li class="sidebar-item">
+          <a class="sidebar-link" href="/attendance">
+            <i class="align-middle" data-feather="log-in"></i>
+            <span class="align-middle">Today's Attendance</span>
+          </a>
+        </li>
+
+        <li class="sidebar-header">STUDENTS</li>
+
+        <li class="sidebar-item">
+          <router-link class="sidebar-link" to="/all-students">
+            <i class="align-middle" data-feather="user"></i>
+            <span class="align-middle">All Students</span>
+          </router-link>
+        </li>
+
+        <li class="sidebar-item">
+          <a class="sidebar-link" href="/add-student">
+            <i class="align-middle" data-feather="check-square"></i>
+            <span class="align-middle">Add Student</span>
+          </a>
+        </li>
+
+        <li class="sidebar-header">REPORT</li>
+
+        <li class="sidebar-item">
+          <a class="sidebar-link" href="/attendance">
+            <i class="align-middle" data-feather="bar-chart-2"></i>
+            <span class="align-middle">Weekly </span>
+          </a>
+        </li>
+
+        <li class="sidebar-item">
+          <a class="sidebar-link" href="/attendance">
+            <i class="align-middle" data-feather="map"></i>
+            <span class="align-middle">Monthly</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</template>
