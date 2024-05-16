@@ -23,10 +23,10 @@
         </li>
 
         <li class="sidebar-item">
-          <a class="sidebar-link" href="/attendance">
+          <router-link class="sidebar-link" to="/attendance">
             <i class="align-middle" data-feather="log-in"></i>
             <span class="align-middle">Today's Attendance</span>
-          </a>
+          </router-link>
         </li>
 
         <li class="sidebar-header">STUDENTS</li>
@@ -39,26 +39,26 @@
         </li>
 
         <li class="sidebar-item">
-          <a class="sidebar-link" href="/add-student">
+          <router-link class="sidebar-link" to="/add-student">
             <i class="align-middle" data-feather="check-square"></i>
             <span class="align-middle">Add Student</span>
-          </a>
+          </router-link>
         </li>
 
         <li class="sidebar-header">REPORT</li>
 
         <li class="sidebar-item">
-          <a class="sidebar-link" href="/attendance">
+          <router-link class="sidebar-link" to="/attendance">
             <i class="align-middle" data-feather="bar-chart-2"></i>
             <span class="align-middle">Weekly </span>
-          </a>
+          </router-link>
         </li>
 
         <li class="sidebar-item">
-          <a class="sidebar-link" href="/attendance">
+          <router-link class="sidebar-link" to="/attendance">
             <i class="align-middle" data-feather="map"></i>
             <span class="align-middle">Monthly</span>
-          </a>
+          </router-link>
         </li>
       </ul>
     </div>
