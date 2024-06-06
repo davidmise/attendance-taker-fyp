@@ -26,9 +26,9 @@ import FooterSection from '@/components/FooterSection.vue'
                         class="rounded-circle img-fluid"
                         style="width: 150px"
                       />
-                      <h5 class="my-3">John Smith</h5>
-                      <p class="text-muted mb-1">Full Stack Developer</p>
-                      <p class="text-muted mb-4">Bay Area, San Francisco, CA</p>
+                      <h5 class="my-3">Rashid Mfaume</h5>
+                      <p class="text-muted mb-1">School Teacher</p>
+                      <p class="text-muted mb-4">Dar, es Salaam</p>
                       <div class="d-flex justify-content-center mb-2">
                         <button
                           type="button"
@@ -58,7 +58,7 @@ import FooterSection from '@/components/FooterSection.vue'
                           <p class="mb-0">Full Name</p>
                         </div>
                         <div class="col-sm-9">
-                          <p class="text-muted mb-0">Johnatan Smith</p>
+                          <p class="text-muted mb-0">Rashid Mfaume</p>
                         </div>
                       </div>
                       <hr />

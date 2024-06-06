@@ -45,6 +45,33 @@
           </router-link>
         </li>
 
+        <li class="sidebar-header">ATTENDANCE</li>
+        <li class="sidebar-item">
+          <router-link class="sidebar-link" to="/all-students">
+            <i class="align-middle" data-feather="user"></i>
+            <span class="align-middle">Form 1</span>
+          </router-link>
+        </li>
+
+        <li class="sidebar-item">
+          <router-link class="sidebar-link" to="/add-student">
+            <i class="align-middle" data-feather="check-square"></i>
+            <span class="align-middle"> Form 2</span>
+          </router-link>
+        </li>
+        <li class="sidebar-item">
+          <router-link class="sidebar-link" to="/add-student">
+            <i class="align-middle" data-feather="check-square"></i>
+            <span class="align-middle"> Form 3</span>
+          </router-link>
+        </li>
+
+        <li class="sidebar-item">
+          <router-link class="sidebar-link" to="/add-student">
+            <i class="align-middle" data-feather="check-square"></i>
+            <span class="align-middle"> Form 4</span>
+          </router-link>
+        </li>
         <li class="sidebar-header">REPORT</li>
 
         <li class="sidebar-item">

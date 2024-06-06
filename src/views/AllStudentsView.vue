@@ -6,14 +6,11 @@ import FooterSection from '@/components/FooterSection.vue'
 <template>
   <div class="wrapper">
     <Sidebar />
-
     <div class="main">
       <top-bar />
-
       <main class="content">
         <div class="container-fluid p-0">
           <h1 class="h3 mb-3"><strong>ALL</strong> Students</h1>
-
           <div class="row">
             <div class="col-12 col-lg-12 col-xxl-12">
               <div class="card border-0 flex-fill">
