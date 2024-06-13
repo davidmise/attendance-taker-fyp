@@ -47,27 +47,27 @@
 
         <li class="sidebar-header">ATTENDANCE</li>
         <li class="sidebar-item">
-          <router-link class="sidebar-link" to="/all-students">
+          <router-link class="sidebar-link" to="/studentsData">
             <i class="align-middle" data-feather="user"></i>
             <span class="align-middle">Form 1</span>
           </router-link>
         </li>
 
         <li class="sidebar-item">
-          <router-link class="sidebar-link" to="/add-student">
+          <router-link class="sidebar-link" to="/studentsDataF2">
             <i class="align-middle" data-feather="check-square"></i>
             <span class="align-middle"> Form 2</span>
           </router-link>
         </li>
         <li class="sidebar-item">
-          <router-link class="sidebar-link" to="/add-student">
+          <router-link class="sidebar-link" to="/studentsDataF3">
             <i class="align-middle" data-feather="check-square"></i>
             <span class="align-middle"> Form 3</span>
           </router-link>
         </li>
 
         <li class="sidebar-item">
-          <router-link class="sidebar-link" to="/add-student">
+          <router-link class="sidebar-link" to="/studentsDataF4">
             <i class="align-middle" data-feather="check-square"></i>
             <span class="align-middle"> Form 4</span>
           </router-link>

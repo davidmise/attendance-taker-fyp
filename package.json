@@ -15,6 +15,7 @@
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "feather-icons": "^4.29.2",
+    "firebase": "^10.12.2",
     "pinia": "^2.1.7",
     "simplebar": "^6.2.6",
     "vue": "^3.4.21",
