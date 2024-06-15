@@ -24,7 +24,7 @@ const fetchStudents = () => {
           name: data[key].name,
           Class: data[key].Class,
           RegNumber: data[key].RegNumber || '',
-          status: data[key].status || 'Unknown'
+          status: data[key].attendance
         })
       }
     }
@@ -35,14 +35,18 @@ onMounted(() => {
   fetchStudents()
 })
 
-// Function to get status badge class
+// Function to determine the CSS class for status badges based on attendance status
 const statusBadgeClass = (status) => {
   return {
-    'badge bg-success': status === 'Done' || status === 'Present',
-    'badge bg-danger': status === 'Cancelled' || status === 'Absent',
-    'badge bg-warning': status === 'In progress' || status === 'Late',
-    'badge bg-secondary': status === 'Unknown'
+    'badge bg-success': status === true,  // Green badge for 'Present'
+    'badge bg-danger': status === false,  // Red badge for 'Absent'
   }
+}
+// Function to convert status value to text
+const statusText = (status) => {
+  console.log(status)
+  return status === true ? 'Present' : 'Absent'
+ 
 }
 </script>
 
@@ -68,7 +72,7 @@ const statusBadgeClass = (status) => {
                       <th class="d-none d-xl-table-cell">Class</th>
                       <th class="d-none d-xl-table-cell">RegNumber</th>
                       <th>Status</th>
-                      <th class="d-none d-md-table-cell">Actions</th>
+                      <!-- <th class="d-none d-md-table-cell">Actions</th> -->
                     </tr>
                   </thead>
                   <tbody>
@@ -78,11 +82,9 @@ const statusBadgeClass = (status) => {
                       <td class="d-none d-xl-table-cell">{{ student.Class }}</td>
                       <td class="d-none d-xl-table-cell">{{ student.RegNumber }}</td>
                       <td>
-                        <span :class="statusBadgeClass(student.status)">{{ student.status }}</span>
+                        <span :class="statusBadgeClass(student.status)">{{ statusText(student.status)}}</span>
                       </td>
-                      <td class="d-none d-md-table-cell">
-                        <span class="badge bg-danger">Remove</span>
-                      </td>
+                      
                     </tr>
                   </tbody>
                 </table>

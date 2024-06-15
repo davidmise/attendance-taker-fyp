@@ -1,20 +1,14 @@
-<script setup>
-import Sidebar from '@/components/NavBar/SideBar.vue'
-import TopBar from '@/components/NavBar/TopBar.vue'
-import FooterSection from '@/components/FooterSection.vue'
-</script>
 <template>
   <div class="wrapper">
     <Sidebar />
     <div class="main">
-      <top-bar />
+      <TopBar />
       <main class="content">
         <div class="container-fluid p-0">
           <h1 class="h3 mb-3"><strong>Students </strong>Data</h1>
           <div class="row">
             <div class="col-12 col-lg-12 col-xxl-12">
               <div class="container mt-4">
-                <!-- <h1>Students Data</h1> -->
                 <button
                   type="button"
                   class="btn btn-primary"
@@ -109,16 +103,27 @@ import FooterSection from '@/components/FooterSection.vue'
           </div>
         </div>
       </main>
-      <footer-section />
+      <FooterSection />
     </div>
   </div>
 </template>
 
 <script>
-import { database } from '@/firebase/init'
-import { ref, onValue, set } from 'firebase/database'
+import Sidebar from '@/components/NavBar/SideBar.vue';
+import TopBar from '@/components/NavBar/TopBar.vue';
+import FooterSection from '@/components/FooterSection.vue';
+import { database } from '@/firebase/init';
+import { ref,set, onValue } from 'firebase/database'
+
+import $ from 'jquery';
+
 
 export default {
+  components: {
+    Sidebar,
+    TopBar,
+    FooterSection
+  },
   data() {
     return {
       students: [],
@@ -130,47 +135,98 @@ export default {
         student1: { ID: '63e3601a' },
         student2: { ID: '93c6c40e' }
       }
+    };
+  },
+  methods: {
+    async addStudent() {
+      try {
+        const studentRef = ref(database ,`student/${this.selectedStudent}`); // Assuming 'student' is your Firebase collection
+
+        set(studentRef,{
+          ID: this.studentOptions[this.selectedStudent].ID,
+          name: this.newStudentName,
+          Class: this.newStudentClass,
+          RegNumber: this.RegNumber,
+          entryDate: this.getCurrentDate(), // Capture current date
+          entryTime: this.getCurrentTime()  // Capture current time
+        })
+
+        // // Push the new student data to Firebase
+        // await studentRef.push(newStudent);
+
+        // // Update the local students array if needed (optional)
+        // this.students.push(newStudent);
+
+        // Clear the form inputs
+        this.newStudentName = '';
+        this.newStudentClass = '';
+        this.RegNumber = '';
+
+        // Close the modal or provide feedback as needed
+        $('#addStudentModal').modal('hide');
+      } catch (error) {
+        console.error('Error adding student:', error);
+        // Handle error gracefully (show message, log, etc.)
+      }
+    },
+    getCurrentDate() {
+      const now = new Date();
+      const year = now.getFullYear();
+      let month = now.getMonth() + 1;
+      let day = now.getDate();
+
+      if (month < 10) {
+        month = `0${month}`;
+      }
+      if (day < 10) {
+        day = `0${day}`;
+      }
+
+      return `${year}-${month}-${day}`;
+    },
+    getCurrentTime() {
+      const now = new Date();
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      let seconds = now.getSeconds();
+
+      if (hours < 10) {
+        hours = `0${hours}`;
+      }
+      if (minutes < 10) {
+        minutes = `0${minutes}`;
+      }
+      if (seconds < 10) {
+        seconds = `0${seconds}`;
+      }
+
+      return `${hours}:${minutes}:${seconds}`;
+    },
+    fetchStudents() {
+      const studentsRef = ref(database, 'student');
+
+      onValue(studentsRef, (snapshot) => {
+        const data = snapshot.val();
+
+        if (data) {
+          this.students = Object.values(data).map(student => ({
+            name: student.name,
+            Class: student.Class,
+            RegNumber: student.RegNumber
+          }));
+        }
+      }, (error) => {
+        console.error('Error fetching students:', error);
+        // Handle error gracefully (show message, log, etc.)
+      });
     }
   },
   created() {
-    this.fetchStudents()
-  },
-  methods: {
-    fetchStudents() {
-      const studentsRef = ref(database, 'student')
-      onValue(studentsRef, (snapshot) => {
-        const data = snapshot.val()
-        if (data) {
-          for (const key in data) {
-            if (data[key].name && data[key].Class) {
-              this.students.push({
-                id: key,
-                name: data[key].name,
-                Class: data[key].Class,
-                RegNumber: data[key].RegNumber
-              })
-            }
-          }
-        }
-      })
-    },
-    addStudent() {
-      const studentRef = ref(database, `student/${this.selectedStudent}`)
-      set(studentRef, {
-        ID: this.studentOptions[this.selectedStudent].ID,
-        name: this.newStudentName,
-        Class: this.newStudentClass,
-        RegNumber: this.RegNumber
-      })
-        .then(() => {
-          this.newStudentName = ''
-          this.newStudentClass = ''
-          this.RegNumber = ''
-        })
-        .catch((error) => {
-          console.error('Error adding student: ', error)
-        })
-    }
+    this.fetchStudents();
   }
-}
+};
 </script>
+
+<style scoped>
+/* Add any scoped styles here if needed */
+</style>

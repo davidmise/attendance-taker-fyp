@@ -6,7 +6,7 @@
 
     <div class="navbar-collapse collapse">
       <ul class="navbar-nav navbar-align">
-        <li class="nav-item dropdown">
+        <!-- <li class="nav-item dropdown">
           <a
             class="nav-link dropdown-toggle d-none d-sm-inline-block"
             href="#"
@@ -26,7 +26,7 @@
               ><span><i class="bi bi-box-arrow-right"></i></span> Log out</router-link
             >
           </div>
-        </li>
+        </li> -->
       </ul>
     </div>
   </nav>

@@ -24,11 +24,11 @@
                     </div>
                     <div class="col-auto">
                       <div class="stat text-primary">
-                        <i class="align-middle" data-feather="truck"></i>
+                        <i class="align-middle" data-feather="users"></i>
                       </div>
                     </div>
                   </div>
-                  <h1 class="mt-1 mb-3">{{ totalStudents }}</h1>
+                  <h1 class="mt-1 mb-3">{{ summaryStore.getTotalStudents }}</h1>
                 </div>
               </div>
             </div>
@@ -43,11 +43,11 @@
                     </div>
                     <div class="col-auto">
                       <div class="stat text-primary">
-                        <i class="align-middle" data-feather="users"></i>
+                        <i class="align-middle" data-feather="user-x"></i>
                       </div>
                     </div>
                   </div>
-                  <h1 class="mt-1 mb-3">{{ totalAbsent }}</h1>
+                  <h1 class="mt-1 mb-3">{{ summaryStore.getTotalAbsent }}</h1>
                 </div>
               </div>
             </div>
@@ -62,18 +62,18 @@
                     </div>
                     <div class="col-auto">
                       <div class="stat text-primary">
-                        <i class="align-middle" data-feather="dollar-sign"></i>
+                        <i class="align-middle" data-feather="user-check"></i>
                       </div>
                     </div>
                   </div>
-                  <h1 class="mt-1 mb-3">{{ totalPresent }}</h1>
+                  <h1 class="mt-1 mb-3">{{ summaryStore.getTotalPresent }}</h1>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Latest Projects table -->
-          <div class="row">
+          <div class="row mt-4">
             <div class="col-12">
               <div class="card border-0 flex-fill">
                 <div class="card-header">
@@ -116,60 +116,18 @@
 <script setup>
 import Sidebar from '@/components/NavBar/SideBar.vue'
 import TopBar from '@/components/NavBar/TopBar.vue'
-import { ref, onMounted } from 'vue'
-import { onValue } from 'firebase/database'
-import { database } from '@/firebase/init' // Ensure this imports Firebase database instance
-// import { reactive, computed, onMounted } from 'vue';
+import { onMounted } from 'vue'
+import { useSummaryStore } from '@/stores/counter'
 
-// const state = reactive({
-//   students: []
-// });
+// Create an instance of the summary store
+const summaryStore = useSummaryStore()
 
-// Reactive references for data
-const totalStudents = ref(0)
-const totalAbsent = ref(0)
-const totalPresent = ref(0)
-const latestProjects = ref([])
+// Fetch summary data when the component is mounted
+onMounted(() => {
+  summaryStore.fetchStudents()
+})
 
-// Fetch data from Firebase and update reactive references
-const fetchData = () => {
-  // Fetch total students
-  const studentsRef = ref(database, 'analytics/totalStudents')
-  onValue(studentsRef, (snapshot) => {
-    totalStudents.value = snapshot.val() || 0 // Ensure default value is set if data is null or undefined
-  })
-
-  // Fetch total absent
-  const absentRef = ref(database, 'analytics/totalAbsent')
-  onValue(absentRef, (snapshot) => {
-    totalAbsent.value = snapshot.val() || 0 // Ensure default value is set if data is null or undefined
-  })
-
-  // Fetch total present
-  const presentRef = ref(database, 'analytics/totalPresent')
-  onValue(presentRef, (snapshot) => {
-    totalPresent.value = snapshot.val() || 0 // Ensure default value is set if data is null or undefined
-  })
-
-  // Fetch latest projects
-  const projectsRef = database.ref('projects')
-  projectsRef.limitToLast(5).on('value', (snapshot) => {
-    const projects = []
-    snapshot.forEach((childSnapshot) => {
-      const project = childSnapshot.val()
-      projects.push({
-        name: project.name,
-        startDate: project.startDate,
-        endDate: project.endDate,
-        status: project.status,
-        assignee: project.assignee
-      })
-    })
-    latestProjects.value = projects.reverse() // Reverse to show latest first
-  })
-}
-
-// Helper function to determine status badge class
+// Function to determine the CSS class for status badges based on status
 const statusBadgeClass = (status) => {
   switch (status) {
     case 'Present':
@@ -184,11 +142,6 @@ const statusBadgeClass = (status) => {
       return 'badge bg-secondary'
   }
 }
-
-// Fetch data when component is mounted
-onMounted(() => {
-  fetchData()
-})
 </script>
 
 <style scoped>
