@@ -2,6 +2,7 @@ import './assets/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import './migrate' // Import the migration script
 
 import App from './App.vue'
 import router from './router'

@@ -1,46 +1,75 @@
-// stores/student.js
 import { defineStore } from 'pinia'
-import { ref, set, onValue } from 'firebase/database'
-import { database } from '@/firebase/init'
+import { collection, doc, setDoc, updateDoc, getDocs } from 'firebase/firestore'
+import { ref, set } from 'firebase/database'
+import { firestore, database } from '@/firebase/init'
 
 export const useStudentStore = defineStore('student', {
   state: () => ({
-    students: [],
+    students: [], // Renamed from `student` to `students`
   }),
   actions: {
-    addStudent(student) {
-      const studentRef = ref(database, `students/${student.id}`)
-      set(studentRef, {
+    async addStudent(student) {
+      const firestoreRef = doc(firestore, 'student', student.id)
+      const databaseRef = ref(database, `student/${student.id}`)
+
+      const studentData = {
         name: student.name,
         Class: student.Class,
-        attendance: false,  // Default attendance status
+        RegNumber: student.RegNumber, // Added RegNumber
+        attendance: false,
         entryDate: getCurrentDate(),
         entryTime: getCurrentTime(),
-      })
+      }
+
+      // Add student to Firestore and Realtime Database
+      try {
+        await setDoc(firestoreRef, studentData)
+        console.log('Student added to Firestore with ID:', student.id)
+
+        await set(databaseRef, studentData)
+        console.log('Student added to Realtime Database with ID:', student.id)
+      } catch (error) {
+        console.error('Error adding student:', error)
+      }
     },
-    updateAttendance(studentId, attendanceStatus) {
-      const studentRef = ref(database, `students/${studentId}`)
+    async updateAttendance(studentId, attendanceStatus) {
+      const firestoreRef = doc(firestore, 'student', studentId)
+      const databaseRef = ref(database, `student/${studentId}`)
+
       const newStatus = attendanceStatus === 'Present' ? true : false
-      studentRef.update({
-        attendance: newStatus,
-        timestamp: getCurrentTimestamp(),
-      })
+      const timestamp = getCurrentTimestamp()
+
+      // Update Firestore and Realtime Database
+      try {
+        await updateDoc(firestoreRef, {
+          attendance: newStatus,
+          timestamp: timestamp,
+        })
+        console.log('Attendance updated in Firestore for student ID:', studentId)
+
+        await updateDoc(databaseRef, {
+          attendance: newStatus,
+          timestamp: timestamp,
+        })
+        console.log('Attendance updated in Realtime Database for student ID:', studentId)
+      } catch (error) {
+        console.error('Error updating attendance:', error)
+      }
     },
-    fetchStudents() {
-      const studentsRef = ref(database, 'students')
-      onValue(studentsRef, (snapshot) => {
-        const data = snapshot.val()
-        if (data) {
-          this.students = Object.values(data)
-        } else {
-          this.students = []
-        }
-      })
+    async fetchStudents() {
+      const studentsRef = collection(firestore, 'student')
+
+      try {
+        const querySnapshot = await getDocs(studentsRef)
+        this.students = querySnapshot.docs.map(doc => doc.data())
+      } catch (error) {
+        console.error('Error fetching students from Firestore:', error)
+      }
     },
   },
 })
 
-// Helper function to get current date in YYYY-MM-DD format
+// Helper functions
 function getCurrentDate() {
   const now = new Date()
   const year = now.getFullYear()
@@ -49,20 +78,18 @@ function getCurrentDate() {
   return `${year}-${month}-${day}`
 }
 
-// Helper function to get current time in HH:mm AM/PM format
 function getCurrentTime() {
   const now = new Date()
   let hours = now.getHours()
   let minutes = now.getMinutes()
   const ampm = hours >= 12 ? 'PM' : 'AM'
   hours = hours % 12
-  hours = hours ? hours : 12 // the hour '0' should be '12'
+  hours = hours ? hours : 12
   minutes = minutes < 10 ? '0' + minutes : minutes
   const strTime = hours + ':' + minutes + ' ' + ampm
   return strTime
 }
 
-// Helper function to get current timestamp (UNIX timestamp)
 function getCurrentTimestamp() {
   return Math.floor(new Date().getTime() / 1000)
 }

@@ -116,6 +116,7 @@
 <script setup>
 import Sidebar from '@/components/NavBar/SideBar.vue'
 import TopBar from '@/components/NavBar/TopBar.vue'
+import FooterSection from '@/components/FooterSection.vue'
 import { onMounted } from 'vue'
 import { useSummaryStore } from '@/stores/counter'
 

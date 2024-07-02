@@ -38,7 +38,7 @@
                         ></button>
                       </div>
                       <div class="modal-body">
-                        <form @submit.prevent="addStudent">
+                        <form @submit.prevent="registerStudent">
                           <div class="mb-3">
                             <label for="selectedStudent" class="form-label">Select Student:</label>
                             <select
@@ -112,11 +112,8 @@
 import Sidebar from '@/components/NavBar/SideBar.vue';
 import TopBar from '@/components/NavBar/TopBar.vue';
 import FooterSection from '@/components/FooterSection.vue';
-import { database } from '@/firebase/init';
-import { ref,set, onValue } from 'firebase/database'
-
-import $ from 'jquery';
-
+import { useStudentStore } from '@/stores/student';
+import { mapActions, mapState } from 'pinia';
 
 export default {
   components: {
@@ -137,88 +134,28 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapState(useStudentStore, ['students'])
+  },
   methods: {
-    async addStudent() {
+    ...mapActions(useStudentStore, ['addStudent', 'fetchStudents']),
+    async registerStudent() {
+      const studentData = {
+        id: this.studentOptions[this.selectedStudent].ID,
+        name: this.newStudentName,
+        Class: this.newStudentClass,
+        RegNumber: this.RegNumber
+      };
+
       try {
-        const studentRef = ref(database ,`student/${this.selectedStudent}`); // Assuming 'student' is your Firebase collection
+        await this.addStudent(studentData);
 
-        set(studentRef,{
-          ID: this.studentOptions[this.selectedStudent].ID,
-          name: this.newStudentName,
-          Class: this.newStudentClass,
-          RegNumber: this.RegNumber,
-          entryDate: this.getCurrentDate(), // Capture current date
-          entryTime: this.getCurrentTime()  // Capture current time
-        })
-
-        // // Push the new student data to Firebase
-        // await studentRef.push(newStudent);
-
-        // // Update the local students array if needed (optional)
-        // this.students.push(newStudent);
-
-        // Clear the form inputs
         this.newStudentName = '';
         this.newStudentClass = '';
         this.RegNumber = '';
-
-        // Close the modal or provide feedback as needed
-        $('#addStudentModal').modal('hide');
       } catch (error) {
-        console.error('Error adding student:', error);
-        // Handle error gracefully (show message, log, etc.)
+        console.error('Error registering student:', error);
       }
-    },
-    getCurrentDate() {
-      const now = new Date();
-      const year = now.getFullYear();
-      let month = now.getMonth() + 1;
-      let day = now.getDate();
-
-      if (month < 10) {
-        month = `0${month}`;
-      }
-      if (day < 10) {
-        day = `0${day}`;
-      }
-
-      return `${year}-${month}-${day}`;
-    },
-    getCurrentTime() {
-      const now = new Date();
-      let hours = now.getHours();
-      let minutes = now.getMinutes();
-      let seconds = now.getSeconds();
-
-      if (hours < 10) {
-        hours = `0${hours}`;
-      }
-      if (minutes < 10) {
-        minutes = `0${minutes}`;
-      }
-      if (seconds < 10) {
-        seconds = `0${seconds}`;
-      }
-
-      return `${hours}:${minutes}:${seconds}`;
-    },
-    fetchStudents() {
-      const studentsRef = ref(database, 'student');
-
-      onValue(studentsRef, (snapshot) => {
-        const data = snapshot.val();
-
-        if (data) {
-          this.students = Object.values(data).map(student => ({
-            name: student.name,
-            Class: student.Class,
-            RegNumber: student.RegNumber
-          }));
-        }
-      }, (error) => {
-        console.error('Error fetching students:', error);
-        // Handle error gracefully (show message, log, etc.)
-      });
     }
   },
   created() {

@@ -2,37 +2,53 @@
 import Sidebar from '@/components/NavBar/SideBar.vue'
 import TopBar from '@/components/NavBar/TopBar.vue'
 import FooterSection from '@/components/FooterSection.vue'
-import { database } from '@/firebase/init'
-import { ref, onValue } from 'firebase/database'
+// import { database } from '@/firebase/init'
+// import { ref, onValue } from 'firebase/database'
+import { collection, getDocs } from 'firebase/firestore'
+import { firestore } from '@/firebase/init'
 import { reactive, onMounted } from 'vue'
+import FirestoreTest from '@/components/FirestoreTest.vue'
 
 // Reactive state to store student data
 const state = reactive({
   students: []
 })
 
-// Fetch students from Firebase
-const fetchStudents = () => {
-  const studentsRef = ref(database, 'student')
-  onValue(studentsRef, (snapshot) => {
-    const data = snapshot.val()
-    if (data) {
-      state.students = []
-      for (const key in data) {
-        state.students.push({
-          id: key,
-          name: data[key].name,
-          Class: data[key].Class,
-          RegNumber: data[key].RegNumber || '',
-          status: data[key].attendance
-        })
-      }
-    }
+// Fetch students from Firebase Realtime Database
+// const fetchRealtimeStudents = () => {
+//   const studentsRef = ref(database, 'student')
+//   onValue(studentsRef, (snapshot) => {
+//     const data = snapshot.val()
+//     if (data) {
+//       state.students = []
+//       for (const key in data) {
+//         state.students.push({
+//           id: key,
+//           name: data[key].name,
+//           Class: data[key].Class,
+//           RegNumber: data[key].RegNumber || '',
+//           status: data[key].attendance
+//         })
+//       }
+//     }
+//   })
+// }
+
+// Fetch students from Firestore
+const fetchFirestoreStudents = async () => {
+  const studentsRef = collection(firestore, 'student')
+  const querySnapshot = await getDocs(studentsRef)
+  querySnapshot.forEach((doc) => {
+    state.students.push({
+      id: doc.id,
+      ...doc.data()
+    })
   })
 }
 
 onMounted(() => {
-  fetchStudents()
+  // fetchRealtimeStudents()
+  fetchFirestoreStudents()
 })
 
 // Function to determine the CSS class for status badges based on attendance status
@@ -42,14 +58,12 @@ const statusBadgeClass = (status) => {
     'badge bg-danger': status === false,  // Red badge for 'Absent'
   }
 }
+
 // Function to convert status value to text
 const statusText = (status) => {
-  console.log(status)
   return status === true ? 'Present' : 'Absent'
- 
 }
 </script>
-
 <template>
   <div class="wrapper">
     <Sidebar />
@@ -84,12 +98,14 @@ const statusText = (status) => {
                       <td>
                         <span :class="statusBadgeClass(student.status)">{{ statusText(student.status)}}</span>
                       </td>
-                      
                     </tr>
                   </tbody>
                 </table>
               </div>
             </div>
+          </div>
+          <div class="row">
+            <FirestoreTest/>
           </div>
         </div>
       </main>

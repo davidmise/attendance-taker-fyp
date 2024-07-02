@@ -1,18 +1,20 @@
 <script setup>
-// Importing necessary components and functions
+// Import necessary components and functions
 import Sidebar from '@/components/NavBar/SideBar.vue'
 import TopBar from '@/components/NavBar/TopBar.vue'
 import FooterSection from '@/components/FooterSection.vue'
 import { database } from '@/firebase/init'
 import { ref, onValue } from 'firebase/database'
 import { reactive, computed, onMounted } from 'vue'
+import { useAttendanceStore } from '@/stores/attendance'
 
-// Defining a reactive state object to store students data
+// Define a reactive state object to store students data
 const state = reactive({
-  students: []
+  students: [],
+  selectedDate: new Date().toISOString().substr(0, 10)
 })
 
-// Function to fetch students data from Firebase
+// Fetch students data from Firebase
 const fetchStudents = () => {
   const studentsRef = ref(database, 'student')
   onValue(studentsRef, (snapshot) => {
@@ -62,6 +64,23 @@ const statusText = (status) => {
   console.log(status)
   return status === true ? 'Present' : 'Absent'
 }
+
+// Function to mark attendance using the attendance store
+const attendanceStore = useAttendanceStore()
+const markAttendance = (studentId) => {
+  attendanceStore.markAttendance(studentId)
+}
+
+// Function to fetch attendance history for a specific date
+const fetchAttendanceHistory = async () => {
+  for (const student of state.students) {
+    await attendanceStore.fetchAttendanceHistory(student.id, state.selectedDate)
+  }
+}
+
+onMounted(() => {
+  fetchStudents()
+})
 </script>
 
 <template>
@@ -76,7 +95,7 @@ const statusText = (status) => {
       <main class="content">
         <div class="container-fluid p-0">
           <!-- Page Title -->
-          <h1 class="h3 mb-3"><strong>Today's</strong> Attendance</h1>
+          <h1 class="h3 mb-3"><strong>Attendance</strong> History</h1>
 
           <div class="row">
             <div class="col-12 col-lg-12 col-xxl-12">
@@ -86,7 +105,7 @@ const statusText = (status) => {
                   <div class="row">
                     <div class="col">
                       <!-- Display current date -->
-                      <h5 class="card-title mb-0">Date: {{ new Date().toLocaleDateString() }}</h5>
+                      <h5 class="card-title mb-0">Date: <input type="date" v-model="state.selectedDate" @change="fetchAttendanceHistory" /></h5>
                     </div>
                     <div class="col">
                       <!-- Display class information -->
@@ -102,6 +121,7 @@ const statusText = (status) => {
                       <th class="d-none d-xl-table-cell">Class</th>
                       <th class="d-none d-xl-table-cell">Status</th>
                       <th>Time</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -115,6 +135,11 @@ const statusText = (status) => {
                         <span :class="statusBadgeClass(student.status)">{{ statusText(student.status) }}</span>
                       </td>
                       <td>{{ student.timestamp }}</td>
+                      <td>
+                        <button class="btn btn-primary" @click="markAttendance(student.id)">
+                          Mark Present
+                        </button>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -141,7 +166,6 @@ const statusText = (status) => {
                       <!-- Display number of absent students -->
                       <p>Absent: {{ countStatus(false) }}</p>
                     </div>
-                   
                   </div>
                 </div>
               </div>
@@ -158,4 +182,3 @@ const statusText = (status) => {
 <style>
 /* Add any additional styling if needed */
 </style>
- 
